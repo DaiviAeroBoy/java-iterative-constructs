@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java Iterative Constructs — ICSE Class IX</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #070b14;
+  --surface: #0d1526;
+  --card: #111c33;
+  --border: #1e2d4a;
+  --accent: #00d4ff;
+  --accent2: #7c3aed;
+  --green: #00e676;
+  --yellow: #ffd740;
+  --pink: #ff4081;
+  --orange: #ff6d00;
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --code-bg: #060d1f;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  overflow-x: hidden;
+}
+
+/* ─── HERO ─── */
+.hero {
+  position: relative;
+  padding: 4rem 2rem 3rem;
+  text-align: center;
+  overflow: hidden;
+}
+.hero::before {
+  content:'';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,212,255,0.08) 0%, transparent 70%),
+              radial-gradient(ellipse 60% 40% at 80% 100%, rgba(124,58,237,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0,212,255,0.1);
+  border: 1px solid rgba(0,212,255,0.25);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.4rem 1rem;
+  border-radius: 2rem;
+  margin-bottom: 1.5rem;
+}
+.hero h1 {
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 0.6rem;
+  position: relative;
+}
+.hero h1 .glow {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero p {
+  color: var(--muted);
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+.nav-pills {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  position: relative;
+}
+.nav-pill {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.5rem 1.1rem;
+  border-radius: 2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.nav-pill:hover, .nav-pill.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+}
+
+/* ─── SECTIONS ─── */
+.section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  display: none;
+}
+.section.active { display: block; }
+
+.section-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 0.4rem;
+}
+.section-sub {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+/* ─── CARDS ─── */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.5rem;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+.card-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.8rem;
+}
+.dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+.d-cyan { background: var(--accent); }
+.d-purple { background: var(--accent2); }
+.d-green { background: var(--green); }
+.d-yellow { background: var(--yellow); }
+.d-pink { background: var(--pink); }
+.d-orange { background: var(--orange); }
+
+.card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.6rem; }
+.card p { color: #94a3b8; font-size: 0.88rem; line-height: 1.7; }
+
+/* ─── CODE BLOCKS ─── */
+pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.1rem;
+  overflow-x: auto;
+  line-height: 1.8;
+  margin-top: 0.8rem;
+}
+.kw { color: #79c0ff; font-weight: 700; }
+.num { color: var(--yellow); }
+.str { color: var(--green); }
+.cmt { color: var(--muted); font-style: italic; }
+.fn { color: var(--accent); }
+.op { color: var(--pink); }
+.tp { color: #ffa657; }
+
+/* ─── LOOP ANATOMY ─── */
+.anatomy {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.anatomy h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent); }
+.anatomy-parts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.a-part {
+  flex: 1;
+  min-width: 160px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  font-size: 0.83rem;
+}
+.a-part .a-name {
+  font-weight: 700;
+  color: var(--yellow);
+  margin-bottom: 0.3rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.a-part p { color: #94a3b8; line-height: 1.6; }
+
+/* ─── FLOWCHART ─── */
+.flowchart-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: 1rem 0;
+}
+.f-box {
+  padding: 0.55rem 1.4rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+  border-radius: 8px;
+  min-width: 160px;
+}
+.f-oval { border-radius: 3rem; background: var(--accent); color: #000; }
+.f-diamond-wrap {
+  position: relative;
+  width: 150px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.f-diamond-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--yellow);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+.f-diamond-text {
+  position: relative;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #000;
+  z-index: 1;
+}
+.f-rect { background: var(--accent2); color: #fff; border-radius: 8px; }
+.f-rect-green { background: var(--green); color: #000; border-radius: 8px; }
+.f-arrow { color: var(--muted); font-size: 1.1rem; line-height: 1; margin: 3px 0; }
+.f-row { display: flex; align-items: center; gap: 1rem; justify-content: center; width: 100%; }
+.f-label { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--muted); }
+
+/* ─── COMPARISON TABLE ─── */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+.compare-table th {
+  background: var(--surface);
+  padding: 0.9rem 1rem;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  border-bottom: 1px solid var(--border);
+}
+.compare-table td {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: #94a3b8;
+  line-height: 1.5;
+}
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+.badge-tag {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+.tag-cyan { background: rgba(0,212,255,0.15); color: var(--accent); }
+.tag-purple { background: rgba(124,58,237,0.2); color: #a78bfa; }
+.tag-green { background: rgba(0,230,118,0.15); color: var(--green); }
+
+/* ─── PLAYGROUND ─── */
+.playground {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.pg-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.2rem;
+}
+.pg-header h3 { font-size: 1.05rem; font-weight: 700; }
+.pg-header .tag { color: var(--accent); font-size: 0.8rem; }
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  padding: 1rem;
+  background: var(--bg);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.ctrl-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.ctrl-group label { font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+input[type=range] { accent-color: var(--accent); width: 130px; }
+input[type=number] {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  width: 70px;
+}
+.val { font-family: 'JetBrains Mono', monospace; color: var(--yellow); font-weight: 700; min-width: 28px; }
+select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 0.35rem 0.8rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.83rem;
+}
+.pg-output {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 600px) { .pg-output { grid-template-columns: 1fr; } }
+.code-panel, .result-panel {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+}
+.panel-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.panel-label span { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+.result-panel { border-color: var(--green); }
+.result-items { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
+.r-item { color: var(--green); padding: 1px 0; }
+.r-highlight { color: var(--yellow); font-weight: 700; }
+.r-skip { color: var(--pink); text-decoration: line-through; opacity: 0.6; }
+
+/* ─── JUMP STATEMENTS ─── */
+.jump-demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 600px) { .jump-demo { grid-template-columns: 1fr; } }
+.jump-sim {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.3rem;
+}
+.jump-sim h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; }
+.jump-sim p { font-size: 0.82rem; color: var(--muted); margin-bottom: 0.8rem; line-height: 1.6; }
+.sim-btn {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  margin-bottom: 0.7rem;
+}
+.sim-btn:hover { border-color: var(--accent); color: var(--accent); }
+.sim-output {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.8rem;
+  min-height: 90px;
+  line-height: 1.8;
+}
+
+/* ─── QUIZ ─── */
+.quiz-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.4rem;
+  margin-bottom: 1rem;
+}
+.quiz-q {
+  font-size: 0.92rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+.quiz-code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7rem;
+  margin: 0.7rem 0;
+  line-height: 1.7;
+  overflow-x: auto;
+}
+.quiz-opts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+@media (max-width: 500px) { .quiz-opts { grid-template-columns: 1fr; } }
+.qbtn {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: #94a3b8;
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  transition: all 0.2s;
+}
+.qbtn:hover { border-color: var(--accent2); color: #a78bfa; }
+.qbtn.correct { background: rgba(0,230,118,0.12); border-color: var(--green); color: var(--green); }
+.qbtn.wrong { background: rgba(255,64,129,0.12); border-color: var(--pink); color: var(--pink); }
+.qfb { font-size: 0.8rem; margin-top: 0.7rem; font-family: 'JetBrains Mono', monospace; display: none; }
+
+/* ─── CHEATSHEET ─── */
+.cheat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+.cheat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.2rem;
+}
+.cheat-card h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.8rem; }
+.cheat-card pre { font-size: 0.75rem; margin-top: 0; padding: 0.8rem; }
+.tip-list { list-style: none; margin-top: 0.8rem; }
+.tip-list li {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 0.5rem;
+  line-height: 1.5;
+}
+.tip-list li:last-child { border-bottom: none; }
+.tip-icon { flex-shrink: 0; }
+
+/* ─── SCORE ─── */
+.score-bar {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.score-label { font-size: 0.82rem; color: var(--muted); }
+.score-val { font-size: 1.4rem; font-weight: 800; color: var(--accent); font-family: 'JetBrains Mono', monospace; }
+
+/* ─── PROGRESS ─── */
+.progress-track {
+  height: 3px;
+  background: var(--border);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  transition: width 0.4s;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .hero { padding: 3rem 1rem 2rem; }
+  .anatomy-parts { flex-direction: column; }
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(18px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.section.active .card,
+.section.active .anatomy,
+.section.active .playground,
+.section.active .jump-sim,
+.section.active .quiz-card,
+.section.active .cheat-card {
+  animation: fadeUp 0.45s ease both;
+}
+</style>
+</head>
+<body>
+
+<div class="progress-track"><div class="progress-fill" id="progress" style="width:20%"></div></div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="grid-bg"></div>
+  <div class="hero-badge">🔁 ICSE Class IX · Chapter 9</div>
+  <h1>Iterative Constructs<br><span class="glow">in Java</span></h1>
+  <p>Master loops — the engine that powers repetition in programming</p>
+  <div class="nav-pills">
+    <button class="nav-pill active" onclick="showSection('intro',this,20)">📖 Intro</button>
+    <button class="nav-pill" onclick="showSection('for',this,40)">🔵 for Loop</button>
+    <button class="nav-pill" onclick="showSection('while',this,55)">🟡 while Loop</button>
+    <button class="nav-pill" onclick="showSection('dowhile',this,70)">🟠 do-while</button>
+    <button class="nav-pill" onclick="showSection('jump',this,80)">⚡ Jump Stmts</button>
+    <button class="nav-pill" onclick="showSection('compare',this,90)">⚖️ Compare</button>
+    <button class="nav-pill" onclick="showSection('quiz',this,95)">🧠 Quiz</button>
+    <button class="nav-pill" onclick="showSection('cheat',this,100)">📋 Cheatsheet</button>
+  </div>
+</div>
+
+<!-- ══════════════ INTRO ══════════════ -->
+<div class="section active" id="sec-intro">
+  <div class="section-title">What is Iteration?</div>
+  <div class="section-sub">Loops let you repeat a block of code multiple times — the heart of efficient programming</div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-label"><span class="dot d-cyan"></span> Definition</div>
+      <h3>Iterative Process</h3>
+      <p>Repeating a set of instructions a number of times until a condition is met. Instead of writing the same code 100 times, you write it once inside a loop!</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="dot d-purple"></span> Why Use Loops?</div>
+      <h3>Power of Repetition</h3>
+      <p>Print 1 to 1000, sum 50 numbers, check every character in a string — all impossible without loops. They make programs short and powerful.</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="dot d-green"></span> Types in Java</div>
+      <h3>3 Loop Types</h3>
+      <p>Java has <strong style="color:var(--accent)">for</strong>, <strong style="color:var(--yellow)">while</strong>, and <strong style="color:var(--orange)">do-while</strong> loops. Each works differently but all repeat code based on a condition.</p>
+    </div>
+  </div>
+
+  <div class="anatomy">
+    <h3>⚙️ 4 Essential Parts of Every Loop</h3>
+    <div class="anatomy-parts">
+      <div class="a-part">
+        <div class="a-name">1. Initialisation</div>
+        <p>Set the starting value of the loop variable. Runs <em>only once</em>.<br><code style="color:var(--accent);font-family:'JetBrains Mono'">int i = 1;</code></p>
+      </div>
+      <div class="a-part">
+        <div class="a-name">2. Test Condition</div>
+        <p>Checked before each iteration. Loop continues while <em>true</em>, stops when <em>false</em>.<br><code style="color:var(--yellow);font-family:'JetBrains Mono'">i &lt;= 10</code></p>
+      </div>
+      <div class="a-part">
+        <div class="a-name">3. Body</div>
+        <p>The code that actually runs in each iteration. Can be one or many statements.</p>
+      </div>
+      <div class="a-part">
+        <div class="a-name">4. Update</div>
+        <p>Increments or decrements the variable. Without this → infinite loop!<br><code style="color:var(--green);font-family:'JetBrains Mono'">i++</code></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-label"><span class="dot d-cyan"></span> Entry-Controlled Loops</div>
+      <h3>Condition Checked First</h3>
+      <p>The condition is tested <em>before</em> the loop body runs. If false from the start, the body never executes. <strong style="color:var(--accent)">for</strong> and <strong style="color:var(--yellow)">while</strong> are entry-controlled.</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="dot d-orange"></span> Exit-Controlled Loops</div>
+      <h3>Runs At Least Once</h3>
+      <p>The condition is tested <em>after</em> the body runs. Even if the condition is false, the loop body executes <strong style="color:var(--orange)">at least once</strong>. <strong style="color:var(--orange)">do-while</strong> is exit-controlled.</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="dot d-pink"></span> Infinite Loop</div>
+      <h3>Never-Ending Loop</h3>
+      <p>A loop where the condition never becomes false. Usually a bug! Example: forgetting to update the variable, or writing <code style="color:var(--pink);font-family:'JetBrains Mono'">while(true)</code>.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ FOR LOOP ══════════════ -->
+<div class="section" id="sec-for">
+  <div class="section-title">The <span style="color:var(--accent)">for</span> Loop</div>
+  <div class="section-sub">Best used when the number of iterations is known in advance</div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-label"><span class="dot d-cyan"></span> Syntax</div>
+      <h3>Structure</h3>
+      <pre><code><span class="kw">for</span> (initialisation; condition; update) {
+    <span class="cmt">// body — runs while condition is true</span>
+}</code></pre>
+      <p style="margin-top:0.7rem;font-size:0.83rem">All 3 parts — init, condition, update — sit inside the <code style="color:var(--yellow)">( )</code>, separated by <code style="color:var(--accent)">;</code></p>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="dot d-green"></span> Flowchart</div>
+      <h3>How it works</h3>
+      <div class="flowchart-wrap">
+        <div class="f-box f-oval">Start</div>
+        <div class="f-arrow">↓</div>
+        <div class="f-box f-rect" style="background:rgba(124,58,237,0.4);border:1px solid var(--accent2);color:var(--text)">Initialise i = 1</div>
+        <div class="f-arrow">↓</div>
+        <div class="f-diamond-wrap"><div class="f-diamond-text">i &lt;= n?</div></div>
+        <div class="f-row">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+            <div class="f-label" style="color:var(--green)">← true</div>
+            <div class="f-box f-rect">Execute Body</div>
+            <div class="f-arrow">↓</div>
+            <div class="f-box" style="background:rgba(0,212,255,0.15);border:1px solid var(--accent);border-radius:8px;padding:0.4rem 0.8rem;font-size:0.75rem;font-family:'JetBrains Mono'">i++</div>
+            <div class="f-label" style="color:var(--muted);font-size:0.65rem">↑ go back</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+            <div class="f-label" style="color:var(--pink)">false →</div>
+            <div class="f-label">Exit</div>
+          </div>
+        </div>
+        <div class="f-arrow">↓</div>
+        <div class="f-box f-oval" style="background:var(--green)">End</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-label"><span class="dot d-cyan"></span> Example 1</div>
+      <h3>Print 1 to 10</h3>
+      <pre><code><span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">1</span>; i &lt;= <span class="num">10</span>; i++) {
+    <span class="fn">System</span>.out.<span class="fn">println</span>(i);
+}
+<span class="cmt">// Output: 1 2 3 4 5 6 7 8 9 10</span></code></pre>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="dot d-purple"></span> Example 2</div>
+      <h3>Sum of Numbers</h3>
+      <pre><code><span class="kw">int</span> sum = <span class="num">0</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">1</span>; i &lt;= <span class="num">100</span>; i++) {
+    sum = sum <span class="op">+</span> i;
+}
+<span class="fn">System</span>.out.<span class="fn">println</span>(<span class="str">"Sum = "</span> <span class="op">+</span> sum);
+<span class="cmt">// Output: Sum = 5050</span></code></pre>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="dot d-yellow"></span> Example 3</div>
+      <h3>Count Down (Decrement)</h3>
+      <pre><code><span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">10</span>; i &gt;= <span class="num">1</span>; i<span class="op">--</span>) {
+    <span class="fn">System</span>.out.<span class="fn">print</span>(i <span class="op">+</span> <span class="str">" "</span>);
+}
+<span class="cmt">// Output: 10 9 8 7 6 5 4 3 2 1</span></code></pre>
+    </div>
+  </div>
+
+  <!-- FOR PLAYGROUND -->
+  <div class="playground">
+    <div class="pg-header"><span>🎮</span><h3>For Loop Playground</h3><span class="tag">— live interactive</span></div>
+    <div class="controls">
+      <div class="ctrl-group">
+        <label>Start:</label>
+        <input type="number" id="for-start" value="1" min="0" max="20" oninput="updateFor()">
+      </div>
+      <div class="ctrl-group">
+        <label>End:</label>
+        <input type="number" id="for-end" value="10" min="1" max="30" oninput="updateFor()">
+      </div>
+      <div class="ctrl-group">
+        <label>Step:</label>
+        <input type="number" id="for-step" value="1" min="1" max="5" oninput="updateFor()">
+      </div>
+      <div class="ctrl-group">
+        <label>Mode:</label>
+        <select id="for-mode" onchange="updateFor()">
+          <option value="print">Print numbers</option>
+          <option value="sum">Running sum</option>
+          <option value="even">Even/Odd label</option>
+          <option value="table">Times table</option>
+        </select>
+      </div>
+    </div>
+    <div class="pg-output">
+      <div class="code-panel">
+        <div class="panel-label"><span style="background:var(--accent)"></span> Generated Code</div>
+        <div id="for-code"></div>
+      </div>
+      <div class="result-panel">
+        <div class="panel-label"><span style="background:var(--green)"></span> Output</div>
+        <div class="result-items" id="for-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ WHILE ══════════════ -->
+<div class="section" id="sec-while">
+  <div class="section-title">The <span style="color:var(--yellow)">while</span> Loop</div>
+  <div class="section-sub">Best when iterations depend on a condition, not a fixed count</div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-label"><span class="dot d-yellow"></span> Syntax</div>
+      <h3>Structure</h3>
+      <pre><code><span class="cmt">// Initialise BEFORE the loop</span>
+<span class="kw">int</span> i = <span class="num">1</span>;
+
+<span class="kw">while</span> (condition) {
+    <span class="cmt">// body</span>
+    <span class="cmt">// Update INSIDE the loop</span>
+    i<span class="op">++</span>;
+}</code></pre>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="dot d-cyan"></span> Key Point</div>
+      <h3>Entry Controlled</h3>
+      <p>The condition is checked <strong style="color:var(--yellow)">before entering</strong> the loop. If the condition is false from the start, the loop body <strong style="color:var(--pink)">never runs</strong> — not even once.</p>
+      <pre><code><span class="kw">int</span> x = <span class="num">100</span>;
+<span class="kw">while</span> (x <span class="op">&lt;</span> <span class="num">10</span>) {  <span class="cmt">// false!</span>
+    <span class="fn">System</span>.out.<span class="fn">println</span>(x);
+}
+<span class="cmt">// Nothing prints</span></code></pre>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-label"><span class="dot d-yellow"></span> Example 1</div>
+      <h3>Print 1 to 5</h3>
+      <pre><code><span class="kw">int</span> i = <span class="num">1</span>;          <span class="cmt">// init</span>
+<span class="kw">while</span> (i &lt;= <span class="num">5</span>) {   <span class="cmt">// condition</span>
+    <span class="fn">System</span>.out.<span class="fn">println</span>(i);
+    i<span class="op">++</span>;            <span class="cmt">// update</span>
+}
+<span class="cmt">// Output: 1 2 3 4 5</span></code></pre>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="dot d-green"></span> Example 2</div>
+      <h3>Factorial of n</h3>
+      <pre><code><span class="kw">int</span> n = <span class="num">5</span>, fact = <span class="num">1</span>, i = <span class="num">1</span>;
+<span class="kw">while</span> (i &lt;= n) {
+    fact = fact <span class="op">*</span> i;
+    i<span class="op">++</span>;
+}
+<span class="fn">System</span>.out.<span class="fn">println</span>(<span class="str">"5! = "</span> <span class="op">+</span> fact);
+<span class="cmt">// Output: 5! = 120</span></code></pre>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="dot d-purple"></span> Example 3</div>
+      <h3>Digits of a Number</h3>
+      <pre><code><span class="kw">int</span> n = <span class="num">1234</span>, count = <span class="num">0</span>;
+<span class="kw">while</span> (n <span class="op">!=</span> <span class="num">0</span>) {
+    n = n <span class="op">/</span> <span class="num">10</span>;
+    count<span class="op">++</span>;
+}
+<span class="fn">System</span>.out.<span class="fn">println</span>(<span class="str">"Digits: "</span> <span class="op">+</span> count);
+<span class="cmt">// Output: Digits: 4</span></code></pre>
+    </div>
+  </div>
+
+  <!-- WHILE PLAYGROUND -->
+  <div class="playground">
+    <div class="pg-header"><span>🎮</span><h3>While Loop Playground</h3><span class="tag">— factorial & power calculator</span></div>
+    <div class="controls">
+      <div class="ctrl-group">
+        <label>n =</label>
+        <input type="range" id="while-n" min="1" max="10" value="5" oninput="updateWhile()">
+        <span class="val" id="while-nval">5</span>
+      </div>
+      <div class="ctrl-group">
+        <label>Mode:</label>
+        <select id="while-mode" onchange="updateWhile()">
+          <option value="factorial">Factorial (n!)</option>
+          <option value="power">Powers of 2</option>
+          <option value="fibonacci">Fibonacci</option>
+          <option value="reverse">Reverse digits</option>
+        </select>
+      </div>
+    </div>
+    <div class="pg-output">
+      <div class="code-panel">
+        <div class="panel-label"><span style="background:var(--yellow)"></span> Generated Code</div>
+        <div id="while-code"></div>
+      </div>
+      <div class="result-panel">
+        <div class="panel-label"><span style="background:var(--green)"></span> Output</div>
+        <div class="result-items" id="while-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ DO-WHILE ══════════════ -->
+<div class="section" id="sec-dowhile">
+  <div class="section-title">The <span style="color:var(--orange)">do-while</span> Loop</div>
+  <div class="section-sub">Guarantees the body runs at least once — condition checked at the end</div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-label"><span class="dot d-orange"></span> Syntax</div>
+      <h3>Structure</h3>
+      <pre><code><span class="kw">int</span> i = <span class="num">1</span>;
+<span class="kw">do</span> {
+    <span class="cmt">// body — runs FIRST</span>
+    i<span class="op">++</span>;
+} <span class="kw">while</span> (condition); <span class="cmt">// ← semicolon!</span></code></pre>
+      <p style="margin-top:0.8rem;color:var(--pink);font-size:0.83rem">⚠️ Don't forget the semicolon <code style="font-family:'JetBrains Mono'">;</code> after <code style="font-family:'JetBrains Mono'">while(...)</code>!</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="dot d-yellow"></span> Key Difference</div>
+      <h3>Always Runs Once</h3>
+      <p>Even if the condition is false, the body executes once. This makes do-while perfect for <strong style="color:var(--orange)">menu-driven programs</strong> where you always want to show the menu before checking input.</p>
+      <pre><code><span class="kw">int</span> x = <span class="num">100</span>;
+<span class="kw">do</span> {
+    <span class="fn">System</span>.out.<span class="fn">println</span>(x); <span class="cmt">// prints!</span>
+} <span class="kw">while</span> (x <span class="op">&lt;</span> <span class="num">10</span>); <span class="cmt">// false, but too late</span>
+<span class="cmt">// Output: 100</span></code></pre>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-label"><span class="dot d-orange"></span> Example 1</div>
+      <h3>Print 1 to 5</h3>
+      <pre><code><span class="kw">int</span> i = <span class="num">1</span>;
+<span class="kw">do</span> {
+    <span class="fn">System</span>.out.<span class="fn">println</span>(i);
+    i<span class="op">++</span>;
+} <span class="kw">while</span> (i &lt;= <span class="num">5</span>);
+<span class="cmt">// Output: 1 2 3 4 5</span></code></pre>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="dot d-green"></span> Example 2</div>
+      <h3>Sum until input = 0</h3>
+      <pre><code><span class="kw">int</span> sum = <span class="num">0</span>, n;
+<span class="kw">do</span> {
+    <span class="cmt">// accept input n from user</span>
+    sum += n;
+} <span class="kw">while</span> (n <span class="op">!=</span> <span class="num">0</span>);
+<span class="fn">System</span>.out.<span class="fn">println</span>(<span class="str">"Sum = "</span> <span class="op">+</span> sum);</code></pre>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="dot d-pink"></span> Vs While</div>
+      <h3>The Critical Difference</h3>
+      <div style="font-size:0.83rem;color:#94a3b8;line-height:1.7">
+        <div style="margin-bottom:0.5rem"><span style="color:var(--yellow)">while</span> → condition checked BEFORE body</div>
+        <div><span style="color:var(--orange)">do-while</span> → body runs THEN condition checked</div>
+      </div>
+      <pre style="margin-top:0.7rem"><code><span class="cmt">// while: 0 iterations possible</span>
+<span class="cmt">// do-while: minimum 1 iteration</span></code></pre>
+    </div>
+  </div>
+
+  <!-- DO-WHILE DEMO -->
+  <div class="playground">
+    <div class="pg-header"><span>🎮</span><h3>do-while Interactive Demo</h3><span class="tag">— see the "at least once" effect</span></div>
+    <div class="controls">
+      <div class="ctrl-group">
+        <label>Starting value of i:</label>
+        <input type="number" id="dw-start" value="1" min="-5" max="20" oninput="updateDoWhile()">
+      </div>
+      <div class="ctrl-group">
+        <label>Condition: i ≤</label>
+        <input type="number" id="dw-limit" value="5" min="-5" max="20" oninput="updateDoWhile()">
+      </div>
+    </div>
+    <div class="pg-output">
+      <div class="code-panel">
+        <div class="panel-label"><span style="background:var(--orange)"></span> Code</div>
+        <div id="dw-code"></div>
+      </div>
+      <div class="result-panel">
+        <div class="panel-label"><span style="background:var(--green)"></span> Output</div>
+        <div class="result-items" id="dw-result"></div>
+      </div>
+    </div>
+    <p style="font-size:0.8rem;color:var(--muted);margin-top:0.8rem">💡 Try setting start > limit to see the "at least once" behaviour!</p>
+  </div>
+</div>
+
+<!-- ══════════════ JUMP ══════════════ -->
+<div class="section" id="sec-jump">
+  <div class="section-title">Jump Statements</div>
+  <div class="section-sub">break and continue — control the flow inside loops</div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-label"><span class="dot d-pink"></span> break</div>
+      <h3>Exits the Loop</h3>
+      <p>Immediately terminates the loop and moves to the statement <strong style="color:var(--pink)">after</strong> the loop. Like an emergency exit.</p>
+      <pre><code><span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">1</span>; i &lt;= <span class="num">10</span>; i++) {
+    <span class="kw">if</span> (i == <span class="num">5</span>) <span class="kw">break</span>;
+    <span class="fn">System</span>.out.<span class="fn">print</span>(i <span class="op">+</span> <span class="str">" "</span>);
+}
+<span class="cmt">// Output: 1 2 3 4</span></code></pre>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="dot d-cyan"></span> continue</div>
+      <h3>Skips Current Iteration</h3>
+      <p>Skips the <strong style="color:var(--accent)">rest of the current iteration</strong> and jumps to the next one. The loop doesn't stop — it continues.</p>
+      <pre><code><span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">1</span>; i &lt;= <span class="num">10</span>; i++) {
+    <span class="kw">if</span> (i % <span class="num">2</span> == <span class="num">0</span>) <span class="kw">continue</span>;
+    <span class="fn">System</span>.out.<span class="fn">print</span>(i <span class="op">+</span> <span class="str">" "</span>);
+}
+<span class="cmt">// Output: 1 3 5 7 9</span></code></pre>
+    </div>
+  </div>
+
+  <div class="jump-demo">
+    <div class="jump-sim">
+      <h4 style="color:var(--pink)">⚡ break Demo</h4>
+      <p>Loop 1–10. Breaks when i hits the target number.</p>
+      <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.7rem">
+        <label style="font-size:0.8rem;color:var(--muted)">Break at i =</label>
+        <input type="number" id="break-at" value="5" min="1" max="10" style="width:60px">
+        <button class="sim-btn" style="width:auto;margin:0" onclick="runBreak()">▶ Run</button>
+      </div>
+      <div class="sim-output" id="break-out">Click Run to simulate...</div>
+    </div>
+    <div class="jump-sim">
+      <h4 style="color:var(--accent)">⚡ continue Demo</h4>
+      <p>Loop 1–10. Skips numbers that match the skip condition.</p>
+      <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.7rem">
+        <label style="font-size:0.8rem;color:var(--muted)">Skip multiples of</label>
+        <input type="number" id="skip-mod" value="3" min="2" max="9" style="width:60px">
+        <button class="sim-btn" style="width:auto;margin:0" onclick="runContinue()">▶ Run</button>
+      </div>
+      <div class="sim-output" id="cont-out">Click Run to simulate...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ COMPARE ══════════════ -->
+<div class="section" id="sec-compare">
+  <div class="section-title">Comparing All 3 Loops</div>
+  <div class="section-sub">Know when to use which loop — a common exam question!</div>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th><span class="badge-tag tag-cyan">for</span></th>
+        <th><span class="badge-tag tag-purple">while</span></th>
+        <th style="color:var(--orange)">do-while</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Type</td><td>Entry-controlled</td><td>Entry-controlled</td><td>Exit-controlled</td></tr>
+      <tr><td>Condition checked</td><td>Before body</td><td>Before body</td><td>After body</td></tr>
+      <tr><td>Minimum executions</td><td>0 (may not run)</td><td>0 (may not run)</td><td><strong style="color:var(--orange)">1</strong> (always runs once)</td></tr>
+      <tr><td>Best used when</td><td>Iterations known in advance</td><td>Iterations unknown</td><td>Must run at least once</td></tr>
+      <tr><td>Init location</td><td>Inside for()</td><td>Before loop</td><td>Before loop</td></tr>
+      <tr><td>Update location</td><td>Inside for()</td><td>Inside body</td><td>Inside body</td></tr>
+      <tr><td>Common use case</td><td>Printing series, tables</td><td>Input validation, searching</td><td>Menu-driven programs</td></tr>
+      <tr><td>Semicolon after condition?</td><td>No</td><td>No</td><td><strong style="color:var(--pink)">Yes!</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-label"><span class="dot d-cyan"></span> Same code, 3 ways</div>
+      <h3>Print 1 to 5 — for</h3>
+      <pre><code><span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">1</span>; i&lt;=<span class="num">5</span>; i++) {
+    <span class="fn">System</span>.out.<span class="fn">println</span>(i);
+}</code></pre>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="dot d-yellow"></span> Same code, 3 ways</div>
+      <h3>Print 1 to 5 — while</h3>
+      <pre><code><span class="kw">int</span> i = <span class="num">1</span>;
+<span class="kw">while</span>(i &lt;= <span class="num">5</span>) {
+    <span class="fn">System</span>.out.<span class="fn">println</span>(i);
+    i<span class="op">++</span>;
+}</code></pre>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="dot d-orange"></span> Same code, 3 ways</div>
+      <h3>Print 1 to 5 — do-while</h3>
+      <pre><code><span class="kw">int</span> i = <span class="num">1</span>;
+<span class="kw">do</span> {
+    <span class="fn">System</span>.out.<span class="fn">println</span>(i);
+    i<span class="op">++</span>;
+} <span class="kw">while</span>(i &lt;= <span class="num">5</span>);</code></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ QUIZ ══════════════ -->
+<div class="section" id="sec-quiz">
+  <div class="section-title">🧠 Test Yourself</div>
+  <div class="section-sub">ICSE-style questions on iterative constructs</div>
+
+  <div class="score-bar">
+    <div>
+      <div class="score-label">Score</div>
+      <div class="score-val" id="score-display">0 / 6</div>
+    </div>
+    <div style="flex:1;background:var(--border);border-radius:4px;height:8px;overflow:hidden">
+      <div id="score-bar-fill" style="height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width 0.4s;border-radius:4px"></div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-q">Q1. What is the output of this code?</div>
+    <div class="quiz-code"><span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">1</span>; i&lt;=<span class="num">5</span>; i+=<span class="num">2</span>) {<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">System</span>.out.<span class="fn">print</span>(i + <span class="str">" "</span>);<br>}</div>
+    <div class="quiz-opts">
+      <button class="qbtn" onclick="qa(this,true,'✅ Correct! i starts at 1, goes 1→3→5, then 7>5 so stops.')">1 3 5</button>
+      <button class="qbtn" onclick="qa(this,false,'❌ No. Step is +2, so: 1, 3, 5. Not 1 2 3 4 5.')">1 2 3 4 5</button>
+      <button class="qbtn" onclick="qa(this,false,'❌ Not quite. 1+2=3, 3+2=5, 5+2=7 > 5. So 3 values.')">1 3 5 7</button>
+      <button class="qbtn" onclick="qa(this,false,'❌ Wrong. i starts at 1, not 2.')">2 4</button>
+    </div>
+    <div class="qfb" id="qfb0"></div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-q">Q2. Which loop is exit-controlled in Java?</div>
+    <div class="quiz-opts">
+      <button class="qbtn" onclick="qa(this,false,'❌ No. for is entry-controlled — checks condition before running.')">for loop</button>
+      <button class="qbtn" onclick="qa(this,false,'❌ No. while checks condition first — entry-controlled.')">while loop</button>
+      <button class="qbtn" onclick="qa(this,true,'✅ Correct! do-while checks condition AFTER the body runs — exit-controlled!')">do-while loop</button>
+      <button class="qbtn" onclick="qa(this,false,'❌ No. All three are loops, but only do-while is exit-controlled.')">All three</button>
+    </div>
+    <div class="qfb" id="qfb1"></div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-q">Q3. How many times does the loop body run?</div>
+    <div class="quiz-code"><span class="kw">int</span> i = <span class="num">10</span>;<br><span class="kw">while</span>(i &lt; <span class="num">5</span>) {<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">System</span>.out.<span class="fn">println</span>(i);<br>&nbsp;&nbsp;&nbsp;&nbsp;i<span class="op">++</span>;<br>}</div>
+    <div class="quiz-opts">
+      <button class="qbtn" onclick="qa(this,false,'❌ Wrong. 10 > 5 means condition is false. Entry-controlled loops don\'t run if false.')">10 times</button>
+      <button class="qbtn" onclick="qa(this,false,'❌ No. 5 is the limit, but the condition is i < 5 which is false from the start.')">5 times</button>
+      <button class="qbtn" onclick="qa(this,true,'✅ Correct! while checks BEFORE entering. 10 < 5 is false so body never runs.')">0 times</button>
+      <button class="qbtn" onclick="qa(this,false,'❌ Only do-while runs at least once. while can skip entirely.')">1 time</button>
+    </div>
+    <div class="qfb" id="qfb2"></div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-q">Q4. What does the <code style="font-family:'JetBrains Mono';color:var(--pink)">break</code> statement do inside a loop?</div>
+    <div class="quiz-opts">
+      <button class="qbtn" onclick="qa(this,false,'❌ That\'s continue, not break. continue skips current iteration.')">Skips the current iteration</button>
+      <button class="qbtn" onclick="qa(this,true,'✅ Correct! break immediately exits the entire loop.')">Terminates the loop entirely</button>
+      <button class="qbtn" onclick="qa(this,false,'❌ No. break exits the loop, it doesn\'t restart it.')">Restarts the loop</button>
+      <button class="qbtn" onclick="qa(this,false,'❌ No. break does NOT jump to the next iteration — continue does that.')">Goes to next iteration</button>
+    </div>
+    <div class="qfb" id="qfb3"></div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-q">Q5. What is the output?</div>
+    <div class="quiz-code"><span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">1</span>; i&lt;=<span class="num">5</span>; i++) {<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span>(i==<span class="num">3</span>) <span class="kw">continue</span>;<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">System</span>.out.<span class="fn">print</span>(i + <span class="str">" "</span>);<br>}</div>
+    <div class="quiz-opts">
+      <button class="qbtn" onclick="qa(this,false,'❌ 3 is skipped by continue, not printed.')">1 2 3 4 5</button>
+      <button class="qbtn" onclick="qa(this,true,'✅ Yes! When i=3, continue skips the print. So 3 is missing.')">1 2 4 5</button>
+      <button class="qbtn" onclick="qa(this,false,'❌ No. continue doesn\'t stop the loop, only skips i=3.')">1 2</button>
+      <button class="qbtn" onclick="qa(this,false,'❌ No. Loop runs from 1 to 5, but skips 3.')">4 5</button>
+    </div>
+    <div class="qfb" id="qfb4"></div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-q">Q6. A do-while loop with a false condition from the start will execute its body how many times?</div>
+    <div class="quiz-opts">
+      <button class="qbtn" onclick="qa(this,false,'❌ Zero is for while/for loops with false condition from start.')">0 times</button>
+      <button class="qbtn" onclick="qa(this,true,'✅ Correct! do-while always runs the body ONCE before checking the condition.')">1 time</button>
+      <button class="qbtn" onclick="qa(this,false,'❌ No — it runs once and then stops since condition is false.')">2 times</button>
+      <button class="qbtn" onclick="qa(this,false,'❌ Nope. do-while will stop after checking the false condition.')">Infinite times</button>
+    </div>
+    <div class="qfb" id="qfb5"></div>
+  </div>
+</div>
+
+<!-- ══════════════ CHEATSHEET ══════════════ -->
+<div class="section" id="sec-cheat">
+  <div class="section-title">📋 Quick Cheatsheet</div>
+  <div class="section-sub">Everything you need to remember for your exam</div>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4 style="color:var(--accent)">for Loop</h4>
+      <pre><code><span class="kw">for</span>(init; cond; update){
+  body;
+}</code></pre>
+      <ul class="tip-list">
+        <li><span class="tip-icon">✅</span> Use when iterations are known</li>
+        <li><span class="tip-icon">🔵</span> Entry-controlled</li>
+        <li><span class="tip-icon">📐</span> All 3 parts in one line</li>
+        <li><span class="tip-icon">0️⃣</span> May run 0 times</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h4 style="color:var(--yellow)">while Loop</h4>
+      <pre><code>init;
+<span class="kw">while</span>(cond){
+  body; update;
+}</code></pre>
+      <ul class="tip-list">
+        <li><span class="tip-icon">✅</span> Use when iterations unknown</li>
+        <li><span class="tip-icon">🔵</span> Entry-controlled</li>
+        <li><span class="tip-icon">📌</span> Init before, update inside</li>
+        <li><span class="tip-icon">0️⃣</span> May run 0 times</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h4 style="color:var(--orange)">do-while Loop</h4>
+      <pre><code>init;
+<span class="kw">do</span>{
+  body; update;
+}<span class="kw">while</span>(cond); <span class="cmt">// ←;</span></code></pre>
+      <ul class="tip-list">
+        <li><span class="tip-icon">✅</span> Use for menu-driven programs</li>
+        <li><span class="tip-icon">🟠</span> Exit-controlled</li>
+        <li><span class="tip-icon">⚠️</span> Semicolon after while()</li>
+        <li><span class="tip-icon">1️⃣</span> Always runs at least once</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h4 style="color:var(--pink)">Jump Statements</h4>
+      <pre><code><span class="kw">break</span>;    <span class="cmt">// exit loop</span>
+<span class="kw">continue</span>; <span class="cmt">// skip iteration</span></code></pre>
+      <ul class="tip-list">
+        <li><span class="tip-icon">🔴</span> break → exits the loop</li>
+        <li><span class="tip-icon">🔵</span> continue → skips current, continues loop</li>
+        <li><span class="tip-icon">📌</span> Both work in all 3 loop types</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h4 style="color:var(--green)">Common Mistakes</h4>
+      <pre><code><span class="cmt">// ❌ Semicolon kills the loop!</span>
+<span class="kw">for</span>(i=1;i&lt;=5;i++); { ... }
+
+<span class="cmt">// ❌ Missing update = infinite!</span>
+<span class="kw">while</span>(i&lt;=5){ print(i); }
+
+<span class="cmt">// ❌ Missing ; after do-while</span>
+}<span class="kw">while</span>(i&lt;=5)</code></pre>
+    </div>
+
+    <div class="cheat-card">
+      <h4 style="color:var(--purple)">Loop Types Summary</h4>
+      <ul class="tip-list" style="margin-top:0">
+        <li><span class="tip-icon">🔁</span> <strong style="color:var(--text)">Finite loop</strong>: runs a fixed number of times</li>
+        <li><span class="tip-icon">♾️</span> <strong style="color:var(--text)">Infinite loop</strong>: condition never becomes false</li>
+        <li><span class="tip-icon">🕳️</span> <strong style="color:var(--text)">Empty loop</strong>: body is just a semicolon <code style="font-family:'JetBrains Mono'">;</code></li>
+        <li><span class="tip-icon">📐</span> <strong style="color:var(--text)">Step loop</strong>: increments by value other than 1</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── NAVIGATION ───
+function showSection(name, btn, progress) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  btn.classList.add('active');
+  document.getElementById('progress').style.width = progress + '%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── FOR LOOP PLAYGROUND ───
+function updateFor() {
+  const start = parseInt(document.getElementById('for-start').value) || 1;
+  const end = parseInt(document.getElementById('for-end').value) || 10;
+  const step = parseInt(document.getElementById('for-step').value) || 1;
+  const mode = document.getElementById('for-mode').value;
+
+  let codeHtml = '';
+  let results = [];
+  const cap = 25;
+
+  if (mode === 'print') {
+    codeHtml = `<pre><code><span class="kw">for</span>(<span class="kw">int</span> i=${start}; i&lt;=${end}; i+=${step}) {\n    <span class="fn">System</span>.out.<span class="fn">println</span>(i);\n}</code></pre>`;
+    let count = 0;
+    for (let i = start; i <= end; i += step) {
+      if (count++ >= cap) { results.push('<span style="color:var(--muted)">... (truncated)</span>'); break; }
+      results.push(`<div class="r-item">${i}</div>`);
+    }
+  } else if (mode === 'sum') {
+    codeHtml = `<pre><code><span class="kw">int</span> sum = 0;\n<span class="kw">for</span>(<span class="kw">int</span> i=${start}; i&lt;=${end}; i+=${step}) {\n    sum += i;\n}\n<span class="fn">System</span>.out.<span class="fn">println</span>(sum);</code></pre>`;
+    let sum = 0, count = 0;
+    for (let i = start; i <= end; i += step) {
+      if (count++ >= cap) { results.push('<span style="color:var(--muted)">...</span>'); break; }
+      sum += i;
+      results.push(`<div class="r-item">i=${i} → sum=<span class="r-highlight">${sum}</span></div>`);
+    }
+  } else if (mode === 'even') {
+    codeHtml = `<pre><code><span class="kw">for</span>(<span class="kw">int</span> i=${start}; i&lt;=${end}; i+=${step}) {\n    <span class="kw">if</span>(i%2==0)\n        <span class="fn">System</span>.out.<span class="fn">println</span>(i+" Even");\n    <span class="kw">else</span>\n        <span class="fn">System</span>.out.<span class="fn">println</span>(i+" Odd");\n}</code></pre>`;
+    let count = 0;
+    for (let i = start; i <= end; i += step) {
+      if (count++ >= cap) { results.push('<span style="color:var(--muted)">...</span>'); break; }
+      const label = i % 2 === 0 ? '<span style="color:var(--accent)">Even</span>' : '<span style="color:var(--yellow)">Odd</span>';
+      results.push(`<div class="r-item">${i} → ${label}</div>`);
+    }
+  } else if (mode === 'table') {
+    const n = start > 0 ? start : 2;
+    codeHtml = `<pre><code><span class="kw">for</span>(<span class="kw">int</span> i=1; i&lt;=10; i++) {\n    <span class="fn">System</span>.out.<span class="fn">println</span>(${n}+" x "+i+" = "+(${n}*i));\n}</code></pre>`;
+    for (let i = 1; i <= 10; i++) {
+      results.push(`<div class="r-item">${n} × ${i} = <span class="r-highlight">${n * i}</span></div>`);
+    }
+  }
+
+  document.getElementById('for-code').innerHTML = codeHtml;
+  document.getElementById('for-result').innerHTML = results.join('') || '<span style="color:var(--muted)">No output (check values)</span>';
+}
+
+// ─── WHILE PLAYGROUND ───
+function updateWhile() {
+  const n = parseInt(document.getElementById('while-n').value);
+  document.getElementById('while-nval').textContent = n;
+  const mode = document.getElementById('while-mode').value;
+
+  let codeHtml = '', results = [];
+
+  if (mode === 'factorial') {
+    codeHtml = `<pre><code><span class="kw">int</span> fact=1, i=1;\n<span class="kw">while</span>(i&lt;=${n}) {\n    fact *= i;\n    i++;\n}\n<span class="fn">System</span>.out.<span class="fn">println</span>(fact);</code></pre>`;
+    let fact = 1;
+    for (let i = 1; i <= n; i++) {
+      fact *= i;
+      results.push(`<div class="r-item">i=${i}: fact = <span class="r-highlight">${fact}</span></div>`);
+    }
+    results.push(`<div style="color:var(--yellow);font-weight:700;margin-top:4px">→ ${n}! = ${fact}</div>`);
+  } else if (mode === 'power') {
+    codeHtml = `<pre><code><span class="kw">int</span> p=1, i=0;\n<span class="kw">while</span>(i&lt;${n}) {\n    p *= 2;\n    i++;\n}</code></pre>`;
+    let p = 1;
+    for (let i = 0; i < n; i++) {
+      p *= 2;
+      results.push(`<div class="r-item">2^${i+1} = <span class="r-highlight">${p}</span></div>`);
+    }
+  } else if (mode === 'fibonacci') {
+    codeHtml = `<pre><code><span class="kw">int</span> a=0,b=1,i=0;\n<span class="kw">while</span>(i&lt;${n}) {\n    print(a);\n    <span class="kw">int</span> c=a+b; a=b; b=c;\n    i++;\n}</code></pre>`;
+    let a = 0, b = 1;
+    for (let i = 0; i < n; i++) {
+      results.push(`<div class="r-item">F${i} = <span class="r-highlight">${a}</span></div>`);
+      let c = a + b; a = b; b = c;
+    }
+  } else if (mode === 'reverse') {
+    const num = Math.pow(10, n - 1) + n;
+    codeHtml = `<pre><code><span class="kw">int</span> n=${num}, rev=0;\n<span class="kw">while</span>(n!=0) {\n    rev = rev*10 + n%10;\n    n /= 10;\n}</code></pre>`;
+    let temp = num, rev = 0;
+    while (temp !== 0) {
+      let d = temp % 10;
+      rev = rev * 10 + d;
+      results.push(`<div class="r-item">digit=${d} → rev=<span class="r-highlight">${rev}</span></div>`);
+      temp = Math.floor(temp / 10);
+    }
+    results.push(`<div style="color:var(--yellow);font-weight:700;margin-top:4px">→ Reversed: ${rev}</div>`);
+  }
+
+  document.getElementById('while-code').innerHTML = codeHtml;
+  document.getElementById('while-result').innerHTML = results.join('');
+}
+
+// ─── DO-WHILE PLAYGROUND ───
+function updateDoWhile() {
+  const start = parseInt(document.getElementById('dw-start').value) || 1;
+  const limit = parseInt(document.getElementById('dw-limit').value) || 5;
+
+  const codeHtml = `<pre><code><span class="kw">int</span> i = ${start};\n<span class="kw">do</span> {\n    <span class="fn">System</span>.out.<span class="fn">println</span>(i);\n    i++;\n} <span class="kw">while</span>(i &lt;= ${limit});</code></pre>`;
+
+  let results = [];
+  let i = start;
+  let count = 0;
+  const cap = 20;
+  do {
+    if (count++ >= cap) { results.push('<span style="color:var(--muted)">... truncated</span>'); break; }
+    results.push(`<div class="r-item">${i}</div>`);
+    i++;
+  } while (i <= limit);
+
+  if (start > limit) {
+    results.push(`<div style="color:var(--orange);margin-top:4px;font-size:0.8rem">⬆️ Even though ${start} > ${limit}, body ran once!</div>`);
+  }
+
+  document.getElementById('dw-code').innerHTML = codeHtml;
+  document.getElementById('dw-result').innerHTML = results.join('');
+}
+
+// ─── JUMP STATEMENTS ───
+function runBreak() {
+  const at = parseInt(document.getElementById('break-at').value) || 5;
+  let html = '';
+  for (let i = 1; i <= 10; i++) {
+    if (i === at) {
+      html += `<span style="color:var(--pink)">i=${i} → break! Loop exits here ⛔</span>\n`;
+      break;
+    }
+    html += `<span style="color:var(--green)">i=${i} → prints ${i}</span>\n`;
+  }
+  document.getElementById('break-out').innerHTML = html;
+}
+
+function runContinue() {
+  const mod = parseInt(document.getElementById('skip-mod').value) || 3;
+  let html = '';
+  for (let i = 1; i <= 10; i++) {
+    if (i % mod === 0) {
+      html += `<span style="color:var(--muted);text-decoration:line-through">i=${i} → skipped (${i}%${mod}==0) ↩️</span>\n`;
+    } else {
+      html += `<span style="color:var(--green)">i=${i} → prints ${i}</span>\n`;
+    }
+  }
+  document.getElementById('cont-out').innerHTML = html;
+}
+
+// ─── QUIZ ───
+let scores = 0, answered = new Set();
+function qa(btn, correct, msg) {
+  const card = btn.closest('.quiz-card');
+  const idx = [...document.querySelectorAll('.quiz-card')].indexOf(card);
+  if (answered.has(idx)) return;
+  answered.add(idx);
+
+  card.querySelectorAll('.qbtn').forEach(b => b.style.pointerEvents = 'none');
+  btn.classList.add(correct ? 'correct' : 'wrong');
+
+  const fb = card.querySelector('.qfb');
+  fb.style.display = 'block';
+  fb.style.color = correct ? 'var(--green)' : 'var(--pink)';
+  fb.textContent = msg;
+
+  if (correct) scores++;
+  document.getElementById('score-display').textContent = scores + ' / 6';
+  document.getElementById('score-bar-fill').style.width = (scores / 6 * 100) + '%';
+}
+
+// ─── INIT ───
+updateFor();
+updateWhile();
+updateDoWhile();
+</script>
+</body>
+</html>
